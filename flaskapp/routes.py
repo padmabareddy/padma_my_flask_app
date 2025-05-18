@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from flaskapp import app, db
-from flaskapp.models import BlogPost, IpView, Day
+from flaskapp.models import BlogPost, IpView, Day, UkData
 from flaskapp.forms import PostForm
 import datetime
 
@@ -8,6 +8,7 @@ import pandas as pd
 import json
 import plotly
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 # Route for the home page, which is where the blog posts will be shown
@@ -71,3 +72,81 @@ def before_request_func():
         db.session.add(ip_view)  # insert into the ip_view table
 
     db.session.commit()  # commit all the changes to the database
+
+
+@app.route('/uk_dashboard')
+def uk_dashboard():
+    uk_data = UkData.query.all()
+
+    uk_df = pd.DataFrame([
+        {
+            'Constituency': uk.constituency_name,
+            'Turnout2019': uk.Turnout19,
+            'Students': uk.c11FulltimeStudent,
+            'Retired': uk.c11Retired,
+            'Female': uk.c11Female,
+            'HomeOwned': uk.c11HouseOwned
+        }
+        for uk in uk_data
+    ])
+
+    # --- Bottom 5 ---
+    bottom5 = uk_df.nsmallest(5, 'Turnout2019')
+    fig_low = px.bar(
+        bottom5,
+        x='Constituency',
+        y='Turnout2019',
+        title='Bottom 5: Lowest Voter Turnout (2019)',
+        color='Turnout2019',
+        color_continuous_scale='Blues'
+    )
+    fig_low.update_layout(xaxis_tickangle=-45)
+
+    # --- Top 5 ---
+    top5 = uk_df.nlargest(5, 'Turnout2019')
+    fig_high = px.bar(
+        top5,
+        x='Constituency',
+        y='Turnout2019',
+        title='Top 5: Highest Voter Turnout (2019)',
+        color='Turnout2019',
+        color_continuous_scale='Greens'
+    )
+    fig_high.update_layout(xaxis_tickangle=-45)
+
+    # --- Demographics Bottom 5 ---
+    demo_cols = ['Students', 'Retired', 'Female', 'HomeOwned']
+    bottom_demo = bottom5[demo_cols].mean().reset_index()
+    bottom_demo.columns = ['Demographic', 'Average']
+
+    fig_demo_bottom = px.bar(
+        bottom_demo,
+        x='Demographic',
+        y='Average',
+        title='Demographic Averages in Bottom 5 Turnout Constituencies',
+        color='Average',
+        color_continuous_scale='Purples'
+    )
+
+    # --- Demographics Top 5 ---
+    top_demo = top5[demo_cols].mean().reset_index()
+    top_demo.columns = ['Demographic', 'Average']
+
+    fig_demo_top = px.bar(
+        top_demo,
+        x='Demographic',
+        y='Average',
+        title='Demographic Averages in Top 5 Turnout Constituencies',
+        color='Average',
+        color_continuous_scale='Oranges'
+    )
+
+    # Encode all to JSON
+    graphs = {
+        "low": json.dumps(fig_low, cls=plotly.utils.PlotlyJSONEncoder),
+        "high": json.dumps(fig_high, cls=plotly.utils.PlotlyJSONEncoder),
+        "demo_low": json.dumps(fig_demo_bottom, cls=plotly.utils.PlotlyJSONEncoder),
+        "demo_high": json.dumps(fig_demo_top, cls=plotly.utils.PlotlyJSONEncoder),
+    }
+
+    return render_template("uk_dashboard.html", title="UK Electoral Dashboard", **graphs)

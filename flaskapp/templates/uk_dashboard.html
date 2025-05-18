@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="mt-4 mb-5">
+    <h1 class="mb-3 text-center">{{ title }}</h1>
+    <p class="lead text-center">
+        This dashboard compares UK constituencies with the <strong>highest</strong> and <strong>lowest</strong> voter turnout in the 2019 General Election,
+        and explores the demographic makeup of these areas.
+    </p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-primary">Bottom 5 Turnout Constituencies</h4>
+                <div id="graph_low" style="height:500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-success">Top 5 Turnout Constituencies</h4>
+                <div id="graph_high" style="height:500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title text-warning">Demographics: Bottom 5</h4>
+                <p class="card-text">Average % of students, retirees, women, and homeowners in low-turnout areas.</p>
+                <div id="graph_demo_low" style="height:400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title text-warning">Demographics: Top 5</h4>
+                <p class="card-text">Average % of students, retirees, women, and homeowners in high-turnout areas.</p>
+                <div id="graph_demo_high" style="height:400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    Plotly.newPlot('graph_low', {{ low | safe }}.data, {{ low | safe }}.layout);
+    Plotly.newPlot('graph_high', {{ high | safe }}.data, {{ high | safe }}.layout);
+    Plotly.newPlot('graph_demo_low', {{ demo_low | safe }}.data, {{ demo_low | safe }}.layout);
+    Plotly.newPlot('graph_demo_high', {{ demo_high | safe }}.data, {{ demo_high | safe }}.layout);
+</script>
+{% endblock %}
