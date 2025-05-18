@@ -1,87 +1,78 @@
-/* Reset default browser styles */
-html,
-body,
-ul,
-li,
-h1,
-h2,
-p,
-header,
-nav,
-div {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  box-sizing: border-box;
+/* Dropdown styles to add to main.css */
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+/* Add a down arrow for the dropdown */
+.dropdown-toggle::after {
+    content: "";
+    display: inline-block;
+    margin-left: 0.3em;
+    vertical-align: 0.2em;
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-left: 0.3em solid transparent;
+}
+
+/* Dropdown menu (hidden by default) */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+}
+
+/* Show the dropdown menu when dropdown-toggle is clicked (via JavaScript) */
+.dropdown-menu.show {
+    display: block;
+}
+
+/* Links inside the dropdown */
+.dropdown-menu li {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu li a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
+    background-color: #f8f9fa;
 }
 
-/* Header styles */
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 10px 0;
+h1, h4 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#container {
-  width: 80%;
-  margin: 0 auto;
+.lead {
+    font-size: 1.2rem;
+    color: #555;
 }
-
-.logo {
-  font-size: 24px;
-}
-
-.menu {
-  list-style-type: none;
-}
-
-.menu li {
-  display: inline;
-  margin-right: 20px;
-}
-
-.menu li:last-child {
-  margin-right: 0;
-}
-
-.menu li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-.menu li a:hover {
-  text-decoration: underline;
-}
-
-/* Main content styles */
-.container {
-  width: 80%;
-  margin: 20px auto;
-}
-
-.article {
-  margin-bottom: 20px;
-}
-
-.article-title {
-  color: #333;
-  text-decoration: none;
-}
-
-.article-title:hover {
-  text-decoration: underline;
-}
-
-.article-author {
-  font-style: italic;
-  color: #777;
-}
-
-.article-content {
-  color: #555;
+ #fff;
 }
